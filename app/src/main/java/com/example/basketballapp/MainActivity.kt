@@ -34,10 +34,6 @@ class MainActivity : AppCompatActivity() {
 
 
 
-//        addBottomNavigationBarBorder()
-
-
-
 
         binding.bottomNavigationView.setOnItemSelectedListener {
             when(it.itemId) {

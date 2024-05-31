@@ -3,12 +3,17 @@ package com.example.basketballapp
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Button
 import android.widget.ListView
+import android.widget.PopupMenu
+import android.widget.Spinner
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.example.basketballapp.databinding.FragmentHomeBinding
+import kotlin.collections.ArrayList
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -24,7 +29,9 @@ class Home : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    private var list = getFilledArray()
 
+    private val sortByTeamList = arrayOf("Name", "City", "Conference")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,10 +47,45 @@ class Home : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view: View = inflater.inflate(R.layout.fragment_home, container, false)
+
+        val sortButton = view.findViewById<Button>(R.id.button2)
+
+        sortButton.setOnClickListener {
+            addSortingPopup(view, sortButton)
+        }
         val teamlist = view.findViewById<ListView>(R.id.teamList)
-        teamlist.adapter = TeamsAdaper(view.context, getFilledArray())
+        teamlist.adapter = TeamsAdaper(view.context, this.list)
         return view
     }
+
+    fun addSortingPopup(v : View, b : Button){
+        val popupMenu: PopupMenu = PopupMenu(this.context, b)
+        popupMenu.menuInflater.inflate(R.menu.team_sort_popup, popupMenu.menu)
+        popupMenu.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.sortTeamByName -> {
+                    this.list = ArrayList(this.list.sortedBy { team -> team.name });
+                    b.text = "Name"
+                }
+
+                R.id.sortTeamByCity -> {
+                    this.list = ArrayList(this.list.sortedBy { team -> team.city })
+                    b.text = "City"
+                }
+
+                R.id.sortTeamByConference -> {
+                    this.list = ArrayList(this.list.sortedBy { team -> team.conference })
+                    b.text = "Conference"
+                }
+            }
+            val teamList = v.findViewById<ListView>(R.id.teamList)
+            teamList.adapter = TeamsAdaper(v.context, this.list)
+            true
+        }
+
+        popupMenu.show()
+    }
+
 
     private fun getFilledArray(): ArrayList<Team> {
         return arrayListOf<Team>(

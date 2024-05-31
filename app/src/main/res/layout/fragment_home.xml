@@ -65,6 +65,8 @@
         android:layout_height="match_parent"
         android:id="@+id/teamList"
         tools:listitem="@layout/item_team"
-        android:paddingTop="140dp"/>
+        android:layout_marginTop="140dp"
+        android:divider="@null"
+        android:dividerHeight="0dp" />
 
 </FrameLayout>
